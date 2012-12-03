@@ -1,10 +1,13 @@
 <?php
+require_once 'classes/autoload.php';
 class posthandler
 {
-  private $postObject;  
-  function __construct($p)
+  private $postObject;
+  private $fileObject;
+  function __construct($p, $f = NULL)
   {
-    $this->postObject = (object) $p;        
+    $this->postObject = (object) $p;
+    $this->fileObject = $f;       
     if($this->postObject->method && (method_exists($this, $this->postObject->method)))
     {
       $evalStr = '$this->'.$this->postObject->method.'();';
@@ -16,15 +19,21 @@ class posthandler
     }
   }
 
-  function uploadfile()
+  function singleuploadfile()
   {
-    require_once 'classes/fileupload.class.php';
     $fu = new fileupload;    
-    $fu->upload_file_location;
-    $fu->webpath = $_POST['webpath'];
-    $fu->files = $_FILES;
-    $fu->upload();
+    $fu->webpath = $this->postObject->webpath;
+    $fu->files = $this->fileObject;    
+    $fu->singleupload();
+  }
+
+  function multiuploadfile()
+  {
+    $fu = new fileupload;    
+    $fu->webpath = $this->postObject->webpath;
+    $fu->files = $this->fileObject;    
+    $fu->multiupload();
   }
 }
-new posthandler($_POST);
+new posthandler($_POST, $_FILES);
 ?>

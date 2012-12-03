@@ -7,18 +7,36 @@ class fileupload
 	public $files = NULL;
 	function __construct()
 	{
-		$this->config = (object) parse_ini_file('config.ini', true);
-		if($this->config->UPLOAD_FILE_LOCATION)
+		$this->config = new config;
+		if($this->config->values->UPLOAD_FILE_LOCATION)
 		{
-			$this->upload_file_location = $this->config->UPLOAD_FILE_LOCATION;
+			$this->upload_file_location = $this->config->values->UPLOAD_FILE_LOCATION;
 		}
 	}
 
-	function upload()
+	function singleupload()
 	{
-	    $target = $this->appendSlash($this->upload_file_location).basename($this->files['uploaded']['name']);    
-	    move_uploaded_file($this->files['uploaded']['tmp_name'], $target);
-	    header('Location:'.$this->webpath);	    
+		foreach ($this->files as $file)
+		{
+			$filester = (object) $file;
+			$target = $this->appendSlash($this->upload_file_location).basename($filester->name);			
+			move_uploaded_file($filester->tmp_name, $target);			
+		}
+		header('Location:'.$this->webpath);	    
+	}
+
+	function multiupload()
+	{
+		foreach ($this->files as $file)
+		{
+		 	$filester = (object) $file;
+		 	for($i = 0; $i < count($filester->name); $i++) 
+		 	{
+		 		$target = $this->appendSlash($this->upload_file_location).basename($filester->name[$i]);
+		 		move_uploaded_file($filester->tmp_name[$i], $target);			
+		 	}		
+		}
+		header('Location:'.$this->webpath);	    
 	}
 
 	function appendSlash($s)
