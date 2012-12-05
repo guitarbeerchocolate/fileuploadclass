@@ -1,5 +1,5 @@
 <?php
-class fileupload
+class backupfileupload
 {
 	private $config = NULL;
 	public $upload_file_location = NULL;
@@ -14,23 +14,18 @@ class fileupload
 		}
 	}
 
-	function singleupload($subDir = NULL)
+	function singleupload()
 	{
 		foreach ($this->files as $file)
 		{
 			$filester = (object) $file;
-			$target = $this->appendSlash($this->upload_file_location).basename($filester->name);
-			if($subDir)
-			{
-				mkdir($this->upload_file_location.'/'.$subDir, 0777);
-				$target = $this->appendSlash($this->upload_file_location).$subDir.'/'.basename($filester->name);
-			}			
+			$target = $this->appendSlash($this->upload_file_location).basename($filester->name);			
 			move_uploaded_file($filester->tmp_name, $target);			
 		}
-		header('Location:'.$this->webpath);
+		header('Location:'.$this->webpath);	    
 	}
 
-	function multiupload($subDir = NULL)
+	function multiupload()
 	{
 		foreach ($this->files as $file)
 		{
@@ -38,11 +33,6 @@ class fileupload
 		 	for($i = 0; $i < count($filester->name); $i++) 
 		 	{
 		 		$target = $this->appendSlash($this->upload_file_location).basename($filester->name[$i]);
-		 		if($subDir)
-				{
-					mkdir($this->upload_file_location.'/'.$subDir, 0777);
-					$target = $this->appendSlash($this->upload_file_location).$subDir.'/'.basename($filester->name[$i]);
-				}
 		 		move_uploaded_file($filester->tmp_name[$i], $target);			
 		 	}		
 		}

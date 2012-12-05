@@ -24,7 +24,7 @@ class posthandler
     $fu = new fileupload;    
     $fu->webpath = $this->postObject->webpath;
     $fu->files = $this->fileObject;    
-    $fu->singleupload();
+    $fu->singleupload('1');
   }
 
   function multiuploadfile()
@@ -32,7 +32,7 @@ class posthandler
     $fu = new fileupload;    
     $fu->webpath = $this->postObject->webpath;
     $fu->files = $this->fileObject;    
-    $fu->multiupload();
+    $fu->multiupload('1');
   }
 }
 new posthandler($_POST, $_FILES);
